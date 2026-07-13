@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<!-- Sidebar -->
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <div>
+        <div class="sidebar-header">
+            <div class="sidebar-logo">Logo</div>
+            <h2>CareConnect+</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#">Explore the Clinic</a>
+            <a href="{% url 'appointment:dashboard' %}"><strong>Appointments</strong></a>
+        </nav>
+        </div>
+        <div class="sidebar-bottom">
+        <a href="#">Account Settings</a>
+        <a href="{% url 'account:login' %}">Logout</a>
+        </div>
+    </aside>
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+{% endblock %}
