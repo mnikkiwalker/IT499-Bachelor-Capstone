@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Appointment — CareConnect+</title>
+  <link rel="stylesheet" href="../../static/css/scheduling.css">
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="sidebar-logo">Logo</div>
+          <h2>CareConnect+</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="#">Explore the Clinic</a>
+          <a href="dashboard.html"><strong>Appointments</strong></a>
+        </nav>
+      </div>
+      <div class="sidebar-bottom">
+        <a href="#">Account Settings</a>
+        <a href="login.html">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+      <div class="schedule-panel">
+        <a href="dashboard.html" class="close-link">✕</a>
+        <h2>Schedule Appointment</h2>
+
+        <div class="date-picker-group">
+          <label>Appointment Date</label>
+          <input type="date">
+          <span class="db-label">Date filters available slots from Appointments table</span>
+        </div>
+
+        <div class="time-slots">
+          <h3>Available Appointments</h3>
+          <span class="db-label">Pulled from Appointments table — Status = 'Available'</span>
+
+          <div class="slot-list" style="margin-top: 12px;">
+            <button class="slot-btn" onclick="selectSlot(this)">Available Time 1</button>
+            <button class="slot-btn" onclick="selectSlot(this)">Available Time 2</button>
+            <button class="slot-btn selected" onclick="selectSlot(this)">Available Time 3</button>
+            <button class="slot-btn" onclick="selectSlot(this)">Available Time 4</button>
+          </div>
+
+          <a href="confirmation.html" class="confirm-btn">Schedule Appointment</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Simple slot selection — highlights the clicked button
+    function selectSlot(btn) {
+      document.querySelectorAll('.slot-btn').forEach(function(b) {
+        b.classList.remove('selected');
+      });
+      btn.classList.add('selected');
+    }
+  </script>
+
+</body>
+</html>
