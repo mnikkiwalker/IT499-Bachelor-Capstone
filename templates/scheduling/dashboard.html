@@ -1,52 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — CareConnect+</title>
-  <link rel="stylesheet" href="../../static/css/scheduling.css">
-</head>
-<body>
+{% extends 'navigation.html' %}
+{% block content %}
 
-  <div class="page-wrapper">
+  <!-- Main -->
+  <main class="main-content">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div>
-        <div class="sidebar-header">
-          <div class="sidebar-logo">Logo</div>
-          <h2>CareConnect+</h2>
-        </div>
-        <nav class="sidebar-nav">
-          <a href="#">Explore the Clinic</a>
-          <a href="dashboard.html"><strong>Appointments</strong></a>
-        </nav>
-      </div>
-      <div class="sidebar-bottom">
-        <a href="#">Account Settings</a>
-        <a href="login.html">Logout</a>
-      </div>
-    </aside>
+    <a href="{% url 'appointment:schedule'  %}" class="schedule-btn">Schedule Appointment</a>
 
-    <!-- Main -->
-    <main class="main-content">
+    <a href="#" class="office-hours-link">Office Hours Info</a>
 
-      <a href="schedule.html" class="schedule-btn">Schedule Appointment</a>
+    <div class="info-placeholder">
+      <p>Details on Office Hours</p>
+      <span class="db-label">Pulled from Medical_Staff table (provider availability)</span>
+    </div>
 
-      <a href="#" class="office-hours-link">Office Hours Info</a>
+    <div style="margin-top: 24px;">
+      <p style="font-size: 14px; color: #555;">Your upcoming appointments will appear here.</p>
+      <span class="db-label">Pulled from Appointments table — filtered by logged-in student's ID</span>
+    </div>
 
-      <div class="info-placeholder">
-        <p>Details on Office Hours</p>
-        <span class="db-label">Pulled from Medical_Staff table (provider availability)</span>
-      </div>
+  </main>
 
-      <div style="margin-top: 24px;">
-        <p style="font-size: 14px; color: #555;">Your upcoming appointments will appear here.</p>
-        <span class="db-label">Pulled from Appointments table — filtered by logged-in student's ID</span>
-      </div>
-
-    </main>
-  </div>
-
-</body>
-</html>
+{% endblock %}

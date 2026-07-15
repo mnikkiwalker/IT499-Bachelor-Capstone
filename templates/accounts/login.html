@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — CareConnect+</title>
-  <link rel="stylesheet" href="../../static/css/scheduling.css">
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
  
   <div class="login-wrapper">
     <div class="login-box">
@@ -27,12 +20,11 @@
         <span class="db-label">↑ Validated against hashed password in DB</span>
       </div>
  
-      <a href="dashboard.html" class="login-btn">Login</a>
+      <a href="{% url 'appointment:dashboard' %}" class="login-btn">Login</a>
  
       <p class="login-footer">New to us? <a href="#">Create an account</a></p>
  
     </div>
   </div>
  
-</body>
-</html>
+{% endblock %}
