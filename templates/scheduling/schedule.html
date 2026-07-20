@@ -28,7 +28,14 @@
              {% endfor %}
         </div>
 
-        <a href="{% url 'appointment:confirmation' %}" class="confirm-btn">Schedule Appointment</a>
+        <form action="{% url 'appointment:save_appt' %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="slot_id" id="selected-slot-input" value=""></input>
+          <button class="confirm-btn" type="submit">
+            Schedule Appointment
+          </button>
+        </form>
+
       </div>
     </div>
 
@@ -36,11 +43,14 @@
 
 <script>
   // Simple slot selection — highlights the clicked button
+
   function selectSlot(btn) {
     document.querySelectorAll('.slot-btn').forEach(function(b) {
       b.classList.remove('selected');
     });
     btn.classList.add('selected');
+    document.getElementById('selected-slot-input').value = btn.dataset.slotId;
+    console.log("activeSlotID: ", btn.dataset.slotId)
   }
 </script>
 

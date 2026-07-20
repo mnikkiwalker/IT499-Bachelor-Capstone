@@ -30,4 +30,4 @@ class Timeslot(models.Model):
     booked_appt_id = models.CharField()
 
     def __str__(self):
-        return self.name
+        return f"{self.date} — {self.start_time}"

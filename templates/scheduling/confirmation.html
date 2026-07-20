@@ -5,9 +5,9 @@
 
     <div class="confirmation-box">
       <h2>Appointment Confirmed</h2>
-      <p><strong>Time:</strong> 2:00 PM</p>
-      <p><strong>Date:</strong> July 15, 2026</p>
-      <span class="db-label">Time and Date pulled from Appointments table — Status updated to 'Confirmed'</span>
+      <p><strong>Time:</strong> {{ slot.start_time }}</p>
+      <p><strong>Date:</strong> {{ slot.date }}</p>
+      <span class="db-label">Time and Date pulled from timeslot table — is_booked flag updated to 'True'</span>
     </div>
 
     <div style="text-align: center; margin-top: 24px;">

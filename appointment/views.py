@@ -1,6 +1,6 @@
 """this is where your typical "python" logic will go"""
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
 from .models import Timeslot
@@ -26,5 +26,29 @@ def schedule_view(request):
         'selected_date': selected_date,
     })
 
-def confirmation_view(request):
-    return render(request, 'scheduling/confirmation.html')
+def confirmation_view(request, slot_id):
+
+    slot = get_object_or_404(Timeslot, id=slot_id)
+
+    return render(request, 'scheduling/confirmation.html', {
+        'slot': slot
+    })
+
+def save_appt(request):
+
+    if request.method == "POST":
+
+        slot_id = request.POST.get("slot_id")
+
+        print("Saving appt slot: ", slot_id)
+
+        timeslot = get_object_or_404(Timeslot, id=slot_id)
+
+        timeslot.is_booked = True
+
+        timeslot.save()
+
+        return redirect('appointment:confirmation', slot_id)
+
+    else:
+        return redirect('appointment:schedule_page')

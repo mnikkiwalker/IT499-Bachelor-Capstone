@@ -12,5 +12,6 @@ app_name = "appointment"
 urlpatterns = [
     path('', views.dashboard_view, name='dashboard'),
     path('schedule/', views.schedule_view, name='schedule'),
-    path('confirmation/', views.confirmation_view, name='confirmation'),
+    path('schedule/add/', views.save_appt, name='save_appt'),
+    path('confirmation/<int:slot_id>', views.confirmation_view, name='confirmation'),
 ]
