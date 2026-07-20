@@ -8,20 +8,24 @@
       <h2>Schedule Appointment</h2>
 
       <div class="date-picker-group">
-        <label>Appointment Date</label>
-        <input type="date">
-        <span class="db-label">Date filters available slots from Appointments table</span>
+        <form method="get">
+           <label>Appointment Date</label>
+           <input type="date" name="date" value="{{ selected_date|default:'' }}" onchange="this.form.submit()">
+        </form>
+        <span class="db-label">Date filters available slots from Timeslot table</span>
       </div>
 
       <div class="time-slots">
         <h3>Available Appointments</h3>
-        <span class="db-label">Pulled from Appointments table — Status = 'Available'</span>
-
+        <span class="db-label">Pulled live from Timeslot table — is_booked = False</span>
         <div class="slot-list" style="margin-top: 12px;">
-          <button class="slot-btn" onclick="selectSlot(this)">Available Time 1</button>
-          <button class="slot-btn" onclick="selectSlot(this)">Available Time 2</button>
-          <button class="slot-btn selected" onclick="selectSlot(this)">Available Time 3</button>
-          <button class="slot-btn" onclick="selectSlot(this)">Available Time 4</button>
+              {% for slot in available_slots %}
+             <button class="slot-btn" data-slot-id="{{ slot.id }}" onclick="selectSlot(this)">
+               {{ slot.date|date:"D, M j" }} — {{ slot.start_time|time:"g:i A" }}
+             </button>
+             {% empty %}
+             <p>No available appointments right now. Please check back later.</p>
+             {% endfor %}
         </div>
 
         <a href="{% url 'appointment:confirmation' %}" class="confirm-btn">Schedule Appointment</a>
