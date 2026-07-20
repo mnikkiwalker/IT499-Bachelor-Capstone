@@ -2,25 +2,29 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-
 from .models import Timeslot
+
 
 # Create your views here.
 def dashboard_view(request):
     return render(request, 'scheduling/dashboard.html')
 
 def schedule_view(request):
+
+    #searches SQLite3 database for available timeslots
     available_slots = Timeslot.objects.filter(
         is_booked=False,
         date__gte=timezone.localdate()
     ).order_by('date', 'start_time')
 
+    #returns all available appointments if data selected, defaults to first 7 timeslots
     selected_date = request.GET.get('date')
     if selected_date:
         available_slots = available_slots.filter(date=selected_date)
     else:
         available_slots = available_slots[:7]
 
+    #returns available timeslots for rendering and re-renders selected date
     return render(request, 'scheduling/schedule.html', {
         'available_slots': available_slots,
         'selected_date': selected_date,

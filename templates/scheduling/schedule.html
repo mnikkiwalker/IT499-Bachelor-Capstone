@@ -3,10 +3,12 @@
 
   <main class="main-content">
 
+    <!--Section for header details-->
     <div class="schedule-panel">
       <a href="dashboard.html" class="close-link">✕</a>
       <h2>Schedule Appointment</h2>
 
+      <!--Section for date selection-->
       <div class="date-picker-group">
         <form method="get">
            <label>Appointment Date</label>
@@ -15,6 +17,7 @@
         <span class="db-label">Date filters available slots from Timeslot table</span>
       </div>
 
+      <!--Block for generating available timeslots-->
       <div class="time-slots">
         <h3>Available Appointments</h3>
         <span class="db-label">Pulled live from Timeslot table — is_booked = False</span>
@@ -28,6 +31,7 @@
              {% endfor %}
         </div>
 
+        <!--Invisible form and submit button for url routing and appt processing-->
         <form action="{% url 'appointment:save_appt' %}" method="POST">
           {% csrf_token %}
           <input type="hidden" name="slot_id" id="selected-slot-input" value=""></input>
@@ -45,10 +49,14 @@
   // Simple slot selection — highlights the clicked button
 
   function selectSlot(btn) {
+
+    //<!--formats selected button when clicked and deactivates unselected buttons-->
     document.querySelectorAll('.slot-btn').forEach(function(b) {
       b.classList.remove('selected');
     });
     btn.classList.add('selected');
+
+    //<!--sets selected button timeslot and assigns timeslot id to invisible form value for processing -->
     document.getElementById('selected-slot-input').value = btn.dataset.slotId;
     console.log("activeSlotID: ", btn.dataset.slotId)
   }
