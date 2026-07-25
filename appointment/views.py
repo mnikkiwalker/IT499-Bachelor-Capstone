@@ -1,11 +1,52 @@
-"""this is where your typical "python" logic will go"""
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import Timeslot
+from datetime import date, timedelta
+import calendar
 
+def staff_schedule_view(request):
 
-# Create your views here.
+    # staff side view: shows BOOKED timeslots so staff can work the day
+    # this is the mirror of schedule_view — same pattern, but is_booked=True
+
+    # anchor date defaults to today; bad input falls back to today
+    anchor = request.GET.get('date')
+    try:
+        anchor_date = date.fromisoformat(anchor) if anchor else timezone.localdate()
+    except ValueError:
+        anchor_date = timezone.localdate()
+
+    # toggle defaults to day view
+    view_mode = request.GET.get('view', 'day')
+
+    # date range from the toggle
+    if view_mode == 'week':
+        start = anchor_date - timedelta(days=anchor_date.weekday())  # monday
+        end = start + timedelta(days=6)
+    elif view_mode == 'month':
+        start = anchor_date.replace(day=1)
+        last_day = calendar.monthrange(anchor_date.year, anchor_date.month)[1]
+        end = anchor_date.replace(day=last_day)
+    else:  # day
+        start = anchor_date
+        end = anchor_date
+
+    # pull booked slots inside the range, earliest first
+    booked_slots = Timeslot.objects.filter(
+        is_booked=True,
+        date__gte=start,
+        date__lte=end,
+    ).order_by('date', 'start_time')
+
+    return render(request, 'scheduling/staff_schedule.html', {
+        'booked_slots': booked_slots,
+        'anchor_date': anchor_date,
+        'view_mode': view_mode,
+        'range_start': start,
+        'range_end': end,
+    })
+
 def dashboard_view(request):
     return render(request, 'scheduling/dashboard.html')
 

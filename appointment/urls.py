@@ -10,6 +10,7 @@ from . import views
 app_name = "appointment"
 
 urlpatterns = [
+    path('staff/', views.staff_schedule_view, name='staff_schedule'),
     path('', views.dashboard_view, name='dashboard'),
     path('schedule/', views.schedule_view, name='schedule'),
     path('schedule/add/', views.save_appt, name='save_appt'),
