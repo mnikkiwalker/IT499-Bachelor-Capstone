@@ -11,12 +11,17 @@
         </div>
         <nav class="sidebar-nav">
             <a href="#">Explore the Clinic</a>
-            <a href="{% url 'appointment:dashboard' %}"><strong>Appointments</strong></a>
+            <a href="{% url 'appointment:staff_schedule' %}"><strong>Appointments</strong></a>
         </nav>
         </div>
         <div class="sidebar-bottom">
         <a href="#">Account Settings</a>
-        <a href="{% url 'account:login' %}">Logout</a>
+
+        <form method="post" action="{% url 'account:logout' %}" class="logout-form">
+        {% csrf_token %}
+            <button type="submit" class = logout-link">Logout</button>
+        </form>
+
         </div>
     </aside>
 
