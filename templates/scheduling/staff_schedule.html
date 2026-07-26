@@ -1,0 +1,74 @@
+{% extends 'navigation.html' %}
+{% block content %}
+
+  <main class="main-content">
+
+    <div class="schedule-panel">
+      <a href="{% url 'appointment:dashboard' %}" class="close-link">✕</a>
+      <h2>Daily Appointment View</h2>
+
+      <!--date picker + day/week/month toggle, one GET form-->
+      <div class="date-picker-group">
+        <form method="get" id="staff-filter-form">
+          <label>Date</label>
+          <input type="date" name="date" value="{{ anchor_date|date:'Y-m-d' }}" onchange="this.form.submit()">
+
+          <!--hidden field keeps the current view when only the date changes-->
+          <input type="hidden" name="view" id="view-input" value="{{ view_mode }}">
+
+          <div class="view-toggle" style="margin-top: 8px;">
+            <button type="button" class="toggle-btn {% if view_mode == 'day' %}selected{% endif %}"   onclick="setView('day')">Day</button>
+            <button type="button" class="toggle-btn {% if view_mode == 'week' %}selected{% endif %}"  onclick="setView('week')">Week</button>
+            <button type="button" class="toggle-btn {% if view_mode == 'month' %}selected{% endif %}" onclick="setView('month')">Month</button>
+          </div>
+        </form>
+        <span class="db-label">Booked slots from Timeslot table — {{ range_start|date:"M j" }} to {{ range_end|date:"M j" }}</span>
+      </div>
+
+      <!--the appointments for the selected range-->
+      <div class="time-slots">
+        <h3>Appointments</h3>
+        <span class="db-label">Pulled live from Timeslot table — is_booked = True</span>
+
+        <div class="slot-list" style="margin-top: 12px;">
+          {% for slot in booked_slots %}
+          <div class="appt-row" data-slot-id="{{ slot.id }}">
+
+            <span class="appt-when">{{ slot.date|date:"D, M j" }} — {{ slot.start_time|time:"g:i A" }}</span>
+
+            <!--STATUS CONTROL (FR-06) — PLACEHOLDER, does not save yet.
+                no status field exists on Timeslot. disabled until Nikki's data work
+                adds one this week, then swap disabled for a POST like save_appt.-->
+            <select class="status-select" disabled>
+              <option>scheduled</option>
+              <option>checked in</option>
+              <option>completed</option>
+              <option>cancelled</option>
+              <option>no show</option>
+            </select>
+
+            <!--INTAKE LINK (FR-07) — PLACEHOLDER, points nowhere yet.
+                swap the href for intake form url.-->
+            <a href="#" class="intake-link">Open intake form</a>
+
+          </div>
+          {% empty %}
+          <p>No appointments booked for this {{ view_mode }}.</p>
+          {% endfor %}
+        </div>
+        <span class="db-label">Status write + intake link pending </span>
+
+      </div>
+    </div>
+
+  </main>
+
+<script>
+  // toggle sets the hidden view field, then submits — keeps date + view together
+  function setView(mode) {
+    document.getElementById('view-input').value = mode;
+    document.getElementById('staff-filter-form').submit();
+  }
+</script>
+
+{% endblock %}
