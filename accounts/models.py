@@ -1,5 +1,8 @@
 from django.db import models
 
+<<<<<<< HEAD
+# Create your models here
+=======
 class Patient(models.Model):
 
     patient_id = models.AutoField(primary_key=True)
@@ -12,3 +15,4 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+>>>>>>> main
