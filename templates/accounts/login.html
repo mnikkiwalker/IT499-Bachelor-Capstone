@@ -8,19 +8,30 @@
  
       <h1>Login to<br>CareConnect+</h1>
  
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="hello@purdyglobal.com">
-        <span class="db-label">↑ Checked against Students/Patients or Medical_Staff table</span>
-      </div>
- 
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" placeholder="••••••">
-        <span class="db-label">↑ Validated against hashed password in DB</span>
-      </div>
- 
-      <a href="{% url 'appointment:dashboard' %}" class="login-btn">Login</a>
+      <form method="post">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}"">Username</label>
+          <!-- <input type="email" placeholder="hello@purdyglobal.com"> -->
+          {{ form.username }}
+          <span class="db-label">↑ Checked against Students/Patients or Medical_Staff table</span>
+        </div>
+  
+        <div class="form-group">
+          <label for="{{ form.password.id_for_label }}" >Password</label>
+          <!-- <input type="password" placeholder="••••••"> -->
+           {{ form.password }}
+          <span class="db-label">↑ Validated against hashed password in DB</span>
+        </div>
+
+        {% if form.errors %}
+          <p class="login-error">Invalid username or password.</p>
+        {% endif %}
+  
+        <button type="submit" class="login-btn">Login</button>
+      </form>
  
       <p class="login-footer">New to us? <a href="#">Create an account</a></p>
  

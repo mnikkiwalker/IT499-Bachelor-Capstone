@@ -1,9 +1,11 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 from .models import Timeslot
 from datetime import date, timedelta
 import calendar
+
 
 def staff_schedule_view(request):
 
@@ -33,11 +35,22 @@ def staff_schedule_view(request):
         end = anchor_date
 
     # pull booked slots inside the range, earliest first
-    booked_slots = Timeslot.objects.filter(
-        is_booked=True,
-        date__gte=start,
-        date__lte=end,
-    ).order_by('date', 'start_time')
+
+    ### Shows all appts for staff and only user's appts for user
+    if request.user.is_staff:
+        booked_slots = Timeslot.objects.filter(
+            is_booked=True,
+            date__gte=start,
+            date__lte=end,
+        ).order_by('date', 'start_time')
+
+    else:
+        booked_slots = Timeslot.objects.filter(
+            is_booked=True,
+            date__gte=start,
+            date__lte=end,
+            booked_appt_id=request.user.id,
+        ).order_by('date', 'start_time')
 
     return render(request, 'scheduling/staff_schedule.html', {
         'booked_slots': booked_slots,
@@ -71,6 +84,7 @@ def schedule_view(request):
         'selected_date': selected_date,
     })
 
+
 def confirmation_view(request, slot_id):
 
     slot = get_object_or_404(Timeslot, id=slot_id)
@@ -78,6 +92,8 @@ def confirmation_view(request, slot_id):
     return render(request, 'scheduling/confirmation.html', {
         'slot': slot
     })
+
+
 
 def save_appt(request):
 
@@ -90,6 +106,7 @@ def save_appt(request):
         timeslot = get_object_or_404(Timeslot, id=slot_id)
 
         timeslot.is_booked = True
+        timeslot.booked_appt_id = request.user.id
 
         timeslot.save()
 
