@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+
+# Ignore SQLite database files
+*.sqlite3
+*.db
+*.sqlite
