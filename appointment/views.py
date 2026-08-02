@@ -5,6 +5,10 @@ from django.utils import timezone
 from .models import Timeslot
 from datetime import date, timedelta
 import calendar
+from django.urls import reverse
+from urllib.parse import urlencode
+from .models import Timeslot, IntakeForm
+from .forms import IntakeFormForm
 
 
 def staff_schedule_view(request):
@@ -94,6 +98,29 @@ def confirmation_view(request, slot_id):
     })
 
 
+def intake_form_view(request, slot_id):
+
+    slot = get_object_or_404(Timeslot, id=slot_id)
+
+    # if this slot already has an intake, load it so the student edits
+    # instead of creating a second one (the OneToOne would crash on a dupe)
+    existing = IntakeForm.objects.filter(timeslot=slot).first()
+
+    if request.method == "POST":
+        form = IntakeFormForm(request.POST, instance=existing)
+        if form.is_valid():
+            intake = form.save(commit=False)  # hold it before hitting the db
+            intake.timeslot = slot            # attach it to this slot
+            intake.save()
+            return redirect('appointment:confirmation', slot.id)
+    else:
+        form = IntakeFormForm(instance=existing)
+
+    return render(request, 'scheduling/intake_form.html', {
+        'form': form,
+        'slot': slot,
+    })
+
 
 def save_appt(request):
 
@@ -114,3 +141,41 @@ def save_appt(request):
 
     else:
         return redirect('appointment:schedule_page')
+
+# each status maps to the list of statuses it's allowed to move to.
+# the three end states map to empty lists, so nothing can leave them.
+ALLOWED_TRANSITIONS = {
+    "scheduled":  ["checked_in", "cancelled", "no_show"],
+    "checked_in": ["completed", "cancelled"],
+    "completed":  [],
+    "cancelled":  [],
+    "no_show":    [],
+}
+
+
+def update_status(request):
+
+    if request.method == "POST":
+
+        slot_id = request.POST.get("slot_id")
+        new_status = request.POST.get("status")
+
+        timeslot = get_object_or_404(Timeslot, id=slot_id)
+
+        current_status = timeslot.status
+
+        # only save if the move is allowed out of the current status.
+        # an illegal move is skipped, so the old status stays put.
+        if new_status in ALLOWED_TRANSITIONS.get(current_status, []):
+            timeslot.status = new_status
+            timeslot.save()
+
+        # bounce back to the same day/view they were looking at
+        params = urlencode({
+            "date": request.POST.get("date", ""),
+            "view": request.POST.get("view", "day"),
+        })
+        return redirect(f"{reverse('appointment:staff_schedule')}?{params}")
+
+    else:
+        return redirect('appointment:staff_schedule')

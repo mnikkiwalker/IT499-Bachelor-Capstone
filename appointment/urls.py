@@ -15,4 +15,6 @@ urlpatterns = [
     path('schedule/', views.schedule_view, name='schedule'),
     path('schedule/add/', views.save_appt, name='save_appt'),
     path('confirmation/<int:slot_id>', views.confirmation_view, name='confirmation'),
+    path('staff/status/', views.update_status, name='update_status'),
+    path('intake/<int:slot_id>/', views.intake_form_view, name='intake_form'),
 ]
