@@ -34,7 +34,7 @@ class Timeslot(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     is_booked = models.BooleanField(default=False)
-    booked_appt_id = models.CharField()
+    booked_appt_id = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="scheduled")
 
     def __str__(self):
