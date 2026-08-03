@@ -1,0 +1,24 @@
+{% extends 'navigation.html' %}
+{% block content %}
+
+  <main class="main-content">
+
+    <div class="schedule-panel">
+      <a href="{% url 'appointment:dashboard' %}" class="close-link">✕</a>
+      <h2>Patient Intake Form</h2>
+
+      <p class="db-label">
+        For appointment on {{ slot.date|date:"D, M j" }} at {{ slot.start_time|time:"g:i A" }}
+      </p>
+
+      <form method="post" class="intake-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="book-btn">Submit Intake</button>
+      </form>
+
+    </div>
+
+  </main>
+
+{% endblock %}
