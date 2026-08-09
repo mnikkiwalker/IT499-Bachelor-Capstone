@@ -112,7 +112,7 @@ def intake_form_view(request, slot_id):
             intake = form.save(commit=False)  # hold it before hitting the db
             intake.timeslot = slot            # attach it to this slot
             intake.save()
-            return redirect('appointment:confirmation', slot.id)
+        return redirect('appointment:dashboard')
     else:
         form = IntakeFormForm(instance=existing)
 
