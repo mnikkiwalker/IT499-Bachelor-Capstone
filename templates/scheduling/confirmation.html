@@ -10,11 +10,12 @@
       <span class="db-label">Time and Date pulled from timeslot table — is_booked flag updated to 'True'</span>
     </div>
 
-    <div style="text-align: center; margin-top: 24px;">
+    <div class="conf-btn-container">
       <a href="{% url 'appointment:dashboard' %}" class="schedule-btn">Back to Dashboard</a>
+      <a href="{% url 'appointment:intake_form' slot.id %}" class="book-btn">Fill out intake form</a>
     </div>
     
-    <a href="{% url 'appointment:intake_form' slot.id %}" class="book-btn">Fill out intake form</a>
+    
     
   </main>
 {% endblock %}
