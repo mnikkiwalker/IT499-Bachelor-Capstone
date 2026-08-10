@@ -1,0 +1,61 @@
+<div class="search-wrapper">
+    <label id="parameterLabel">{% if selected_patient %}Selected Patient{% else %}Date of Birth{% endif %}</label>
+    <input type="date" id="liveSearch" placeholder="Enter DOB" autocomplete="off" {% if selected_patient %}style="display: none;"{% endif %}>
+    <div id="searchOverlay" class="search-overlay" style="display: none;"></div>
+    <div id="selectedPatient" class="patient-selection">{% if selected_patient %}{{ selected_patient.first_name }} {{ selected_patient.last_name }}{% endif %}</div>
+</div>
+<input type="hidden" id="selected-patient-id" name="patient_id" value="{{ selected_patient.patient_id|default:'' }}">
+
+<script>
+  const input = document.getElementById('liveSearch');
+  const overlay = document.getElementById('searchOverlay');
+  const selection = document.getElementById('selectedPatient');
+  const paramLabel = document.getElementById('parameterLabel');
+  let debounceTimer;
+
+  input.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      const query = this.value.trim();
+
+      if (!query) {
+          overlay.style.display = 'none';
+          return;
+      }
+
+      debounceTimer = setTimeout(async () => {
+          const res = await fetch(`{% url 'account:search_api' %}?q=${encodeURIComponent(query)}`);
+          const data = await res.json();
+
+          if (data.results.length === 0) {
+              overlay.innerHTML = '<div>No results found</div>';
+          } else {
+              overlay.innerHTML = data.results
+                  .map(r => `<div data-id="${r.patient_id}">${r.first_name} ${r.last_name}</div>`)
+                  .join('');
+          }
+          overlay.style.display = 'block';
+      }, 250);
+  });
+
+  // makes each result clickable
+  overlay.addEventListener('click', function(e) {
+      const item = e.target.closest('[data-id]');
+      if (!item) return;
+
+      patientName = item.textContent.trim()
+
+      selection.innerHTML = `${patientName}`
+      paramLabel.innerHTML = 'Selected Patient'
+
+      document.getElementById('selected-patient-id').value = item.dataset.id;
+      overlay.style.display = 'none';
+      input.style.display = 'none';
+  });
+
+  // hides overlay when clicking outside the search area
+  document.addEventListener('click', function(e) {
+      if (!e.target.closest('.search-wrapper')) {
+          overlay.style.display = 'none';
+      }
+  });
+</script>

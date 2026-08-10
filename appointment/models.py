@@ -5,6 +5,7 @@ become our fields with django magic
 """
 
 from django.db import models
+from accounts.models import Patient
 import uuid
 
 # Create your models here.
@@ -34,7 +35,14 @@ class Timeslot(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     is_booked = models.BooleanField(default=False)
-    booked_appt_id = models.CharField(max_length=255)
+    booked_appt_id = models.ForeignKey(
+        Patient,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='booked_appt_id',
+        related_name='booked_slots',
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="scheduled")
 
     def __str__(self):
@@ -54,6 +62,14 @@ class IntakeForm(models.Model):
     current_medications = models.TextField(blank=True)
     allergies = models.TextField(blank=True)
     consent = models.BooleanField(default=False)
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='fk_patient_id',
+        related_name='intake_forms',
+    )
 
     submitted_at = models.DateTimeField(auto_now_add=True)
 

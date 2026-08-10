@@ -5,22 +5,37 @@
 
     <!--Section for header details-->
     <div class="schedule-panel">
-      <a href="dashboard.html" class="close-link">✕</a>
-      <h2>Schedule Appointment</h2>
+      <span><a href="{% url 'appointment:dashboard' %}" class="close-link">✕</a></span>
+      <span><h1>Schedule Appointment</h1></span>
 
-      <!--Section for date selection-->
-      <div class="date-picker-group">
-        <form method="get">
-           <label>Appointment Date</label>
-           <input type="date" name="date" value="{{ selected_date|default:'' }}" onchange="this.form.submit()">
-        </form>
-        <span class="db-label">Date filters available slots from Timeslot table</span>
+
+
+      <div class="parameter-header">
+
+        <!--Section for date selection-->
+        <div class="date-picker-group">
+          <h2>Select Date</h2>
+          <form method="get" onsubmit="syncPatientId(this)">
+            <label>Appointment Date</label>
+            <input type="date" name="date" value="{{ selected_date|default:'' }}" onchange="syncPatientId(this.form); this.form.submit()">
+            <input type="hidden" name="patient_id" value="{{ effective_patient_id|default:'' }}">
+          </form>
+          <!-- <span class="db-label">Date filters available slots from Timeslot table</span> -->
+        </div>
+
+        <!--include patient selection if user is staff-->
+        {% if user.is_authenticated and user.is_staff %}
+        <div class="user-search-wrapper">
+          <h2>Select Patient</h2>
+          {% include "scheduling/patient_search.html" %}
+        </div>
+        {% endif %}
       </div>
 
       <!--Block for generating available timeslots-->
       <div class="time-slots">
         <h3>Available Appointments</h3>
-        <span class="db-label">Pulled live from Timeslot table — is_booked = False</span>
+        <!-- <span class="db-label">Pulled live from Timeslot table — is_booked = False</span> -->
         <div class="slot-list" style="margin-top: 12px;">
               {% for slot in available_slots %}
              <button class="slot-btn" data-slot-id="{{ slot.id }}" onclick="selectSlot(this)">
@@ -35,6 +50,7 @@
         <form action="{% url 'appointment:save_appt' %}" method="POST">
           {% csrf_token %}
           <input type="hidden" name="slot_id" id="selected-slot-input" value=""></input>
+          <input type="hidden" name="patient_id" id="patient-id" value="{{ effective_patient_id|default:'' }}">
           <button class="confirm-btn" type="submit">
             Schedule Appointment
           </button>
@@ -48,6 +64,16 @@
 <script>
   // Simple slot selection — highlights the clicked button
 
+  function syncPatientId(form) {
+    // carries the patient selected in patient_search.html into the date form's
+    // own patient_id field, since that field otherwise only reflects the
+    // last page load and would wipe out a patient picked after the fact
+    const selectedPatientId = document.getElementById('selected-patient-id');
+    if (selectedPatientId) {
+      form.patient_id.value = selectedPatientId.value;
+    }
+  }
+
   function selectSlot(btn) {
 
     //<!--formats selected button when clicked and deactivates unselected buttons-->
@@ -59,7 +85,27 @@
     //<!--sets selected button timeslot and assigns timeslot id to invisible form value for processing -->
     document.getElementById('selected-slot-input').value = btn.dataset.slotId;
     console.log("activeSlotID: ", btn.dataset.slotId)
+
+    //<!--carries a staff-selected patient into the booking form; non-admins have no search box, so this is a no-op for them-->
+    const selectedPatientId = document.getElementById('selected-patient-id');
+    if (selectedPatientId) {
+      document.getElementById('patient-id').value = selectedPatientId.value;
+    }
   }
 </script>
+
+<!-- <script>
+  const input = document.getElementById('dateSelectionInput');
+
+  input.addEventListener('input', async function() {
+
+      const query = this.value.trim();
+
+      const res = await fetch(`{% url 'account:search_api' %}?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+
+  });
+
+</script> -->
 
 {% endblock %}

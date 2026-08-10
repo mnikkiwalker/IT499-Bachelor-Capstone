@@ -9,6 +9,7 @@ from django.urls import reverse
 from urllib.parse import urlencode
 from .models import Timeslot, IntakeForm
 from .forms import IntakeFormForm
+from accounts.models import Patient
 
 
 def staff_schedule_view(request):
@@ -46,6 +47,7 @@ def staff_schedule_view(request):
             is_booked=True,
             date__gte=start,
             date__lte=end,
+            status='scheduled',
         ).order_by('date', 'start_time')
 
     else:
@@ -54,6 +56,7 @@ def staff_schedule_view(request):
             date__gte=start,
             date__lte=end,
             booked_appt_id=request.user.id,
+            status='scheduled',
         ).order_by('date', 'start_time')
 
     return render(request, 'scheduling/staff_schedule.html', {
@@ -82,10 +85,24 @@ def schedule_view(request):
     else:
         available_slots = available_slots[:7]
 
+    #re-hydrates the previously selected patient so it survives the date form's GET submit
+    #non-staff can only ever book for themselves, so their patient_id is fixed server-side
+    #rather than trusted from the querystring
+    if request.user.is_staff:
+        selected_patient_id = request.GET.get('patient_id')
+    else:
+        selected_patient_id = request.user.id
+
+    selected_patient = None
+    if selected_patient_id:
+        selected_patient = Patient.objects.filter(patient_id=selected_patient_id).first()
+
     #returns available timeslots for rendering and re-renders selected date
     return render(request, 'scheduling/schedule.html', {
         'available_slots': available_slots,
         'selected_date': selected_date,
+        'selected_patient': selected_patient,
+        'effective_patient_id': selected_patient_id,
     })
 
 
@@ -127,13 +144,15 @@ def save_appt(request):
     if request.method == "POST":
 
         slot_id = request.POST.get("slot_id")
+        patient_id = request.POST.get("patient_id")
 
         print("Saving appt slot: ", slot_id)
+        print("For patient: ", patient_id)
 
         timeslot = get_object_or_404(Timeslot, id=slot_id)
 
         timeslot.is_booked = True
-        timeslot.booked_appt_id = request.user.id
+        timeslot.booked_appt_id = Patient.objects.get(patient_id=patient_id)
 
         timeslot.save()
 

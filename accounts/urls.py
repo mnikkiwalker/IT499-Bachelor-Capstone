@@ -13,5 +13,6 @@ urlpatterns = [
         ),
         name='login'
     ),
-    path('logout/', LogoutView.as_view(), name='logout')
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('search/', views.search_api, name='search_api')
 ]

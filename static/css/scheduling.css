@@ -215,12 +215,17 @@ body {
 /* ── Schedule Page ── */
 
 .schedule-panel {
-  max-width: 440px;
+  max-width: 800px;
   margin: 0 auto;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 32px;
+  align-items: left;
+}
+
+.schedule-panel h1 {
+  margin-bottom: 15px;
 }
 
 .schedule-panel h2 {
@@ -236,11 +241,22 @@ body {
   font-size: 20px;
 }
 
-.date-picker-group {
-  margin: 20px 0;
+.parameter-header {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px darkgray solid;
 }
 
-.date-picker-group label {
+.date-picker-group {
+  min-width: 200px;
+}
+
+.user-search-wrapper {
+  min-width: 200px;
+  margin-left: 10px;
+}
+
+.date-picker-group label, .search-wrapper label {
   display: block;
   font-size: 11px;
   text-transform: uppercase;
@@ -249,27 +265,35 @@ body {
   margin-bottom: 6px;
 }
 
-.date-picker-group input[type="date"] {
+.date-picker-group input[type="date"], .search-wrapper input[type="date"] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
 }
 
+.time-slots {
+  margin-top: 20px;
+  /* border: 1px red solid; */
+}
+
 .time-slots h3 {
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 12px;
-  text-align: center;
+  /* text-align: center; */
 }
 
-.slot-list {
+/* .slot-list {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
   margin-bottom: 24px;
-}
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px blue solid;
+} */
 
 .slot-btn {
   display: block;
@@ -285,10 +309,12 @@ body {
 }
 
 .slot-btn:hover,
+.search-overlay:hover,
 .slot-btn.selected {
   background: #7a8fa6;
   color: #fff;
   border-color: #7a8fa6;
+  cursor: pointer;
 }
 
 .confirm-btn {
@@ -308,6 +334,18 @@ body {
 
 .confirm-btn:hover {
   background: #1d3650;
+}
+
+.slot-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.slot-list td {
+  padding: 15px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+  /* border: 1px black solid; */
 }
 
 /* ── Confirmation ── */
@@ -373,9 +411,68 @@ body {
   text-decoration: none;
   text-align: center;
   border-radius: 4px;
-  margin-top: 8px;
+  display: block;
 }
 
 .book-btn:hover {
   background: #1d3650;
+  display: block;
 }
+
+.conf-btn-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center; 
+  margin-top: 24px; 
+  align-items: center;
+}
+
+/* 
+.search-wrapper {
+  border-color: red;
+  border-width: 1px;
+  border-style: solid;
+} */
+
+.user-search-wrapper {
+  height: 100px;
+}
+
+.patient-selection {
+  margin-top: 10px;
+}
+
+.search-overlay {
+  padding: 5px;
+  border: 1px solid darkgrey
+}
+
+.appt-row {
+  /* display:flex; */
+  /* justify-content: space-between; */
+  align-items: center;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.open-intake-btn {
+  width: 100px;
+  margin: 0 auto;
+  /* background: red; */
+  background: #2a4a6b;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.intake-complete {
+  font-style: italic;
+  text-decoration-color: lightgrey;
+}
+
+
