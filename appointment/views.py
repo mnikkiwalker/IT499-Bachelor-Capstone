@@ -55,7 +55,7 @@ def staff_schedule_view(request):
             is_booked=True,
             date__gte=start,
             date__lte=end,
-            booked_appt_id=request.user.id,
+            booked_appt_id__user=request.user,
             status='scheduled',
         ).order_by('date', 'start_time')
 
@@ -91,7 +91,7 @@ def schedule_view(request):
     if request.user.is_staff:
         selected_patient_id = request.GET.get('patient_id')
     else:
-        selected_patient_id = request.user.id
+        selected_patient_id = getattr(getattr(request.user, 'patient', None), 'patient_id', None)
 
     selected_patient = None
     if selected_patient_id:

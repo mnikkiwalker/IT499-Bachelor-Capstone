@@ -61,7 +61,7 @@
                 {% if not slot.intake_form %}
                 <a class="open-intake-btn" href="{% url 'appointment:intake_form' slot.id %}">Open Intake Form</a>
                 {% else %}
-                <p class="intake-complete">Intake Complete</p>
+                <a class="intake-complete" href="{% url 'appointment:intake_form' slot.id %}">View/Edit Intake</p>
                 {% endif %}
 
               </td>

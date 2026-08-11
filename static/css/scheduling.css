@@ -277,6 +277,10 @@ body {
   /* border: 1px red solid; */
 }
 
+.time-slots form {
+  align-items: left;
+}
+
 .time-slots h3 {
   font-size: 14px;
   font-weight: 600;
@@ -320,7 +324,7 @@ body {
 .confirm-btn {
   display: block;
   width: 200px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   background: #2a4a6b;
   color: #fff;
   border: none;
@@ -330,6 +334,7 @@ body {
   text-decoration: none;
   text-align: center;
   border-radius: 4px;
+  margin-top: 5px;
 }
 
 .confirm-btn:hover {
